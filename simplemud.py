@@ -172,44 +172,47 @@ while True:
         elif command == "cbt":
             for pid, pl in players.items():
                 if players[pid]["name"] == params:
-                    mud.send_message(id, "+ attaque sur {}".format(players[pid]["name"]))
-                    mud.send_message(pid, "+ {} vous attaque".format(players[id]["name"]))
-                    seuil = 50 + (players[pid]["CBT"] - players[id]["CBT"])
-                    jet = random.randint(1, 100)
-                    if jet >= seuil:
-                        mud.send_message(id, "-+ vous touchez - {} > {}".format(jet, seuil))
-                        mud.send_message(pid, "-+ {} vous touche".format(players[id]["name"]))
-                        if (players[pid]["CBT"] - players[id]["CBT"]) >= 0:
-                            gainxpcbt = 1 + (players[pid]["CBT"] - players[id]["CBT"])
-                        else:
-                            gainxpcbt = 1
-                        players[id]["xpCBT"] = players[id]["xpCBT"] + gainxpcbt
-                        if players[id]["xpCBT"] > players[id]["CBT"]:
-                            players[id]["xpCBT"] = 0
-                            players[id]["CBT"] = players[id]["CBT"] + 1
-                            mud.send_message(id, "-+ vous passez au niveau {} en combat".format(players[id]["CBT"]))
-                        tmpdegt = random.randint(1, players[id]["equip"]["arme"]["degt"]) + players[id]["FOR"]
-                        tmpprot = players[pid]["equip"]["armure"]["prot"] + players[pid]["END"]
-                        degat = tmpdegt - tmpprot
-                        mud.send_message(id, "-+ vous infligez {} degats [att({}) - def({})]".format(degat, tmpdegt, tmpprot))
-                        mud.send_message(pid, "-+ vous subissez {} degats dut a l'arme : {}".format(degat, players[id]["equip"]["arme"]["name"]))
-                        players[pid]["PVa"] = players[pid]["PVa"] - degat
-                        if players[pid]["PVa"] <= 0:
-                            mud.send_message(id, "-+ vous tuez {}".format(players[pid]["name"]))
-                            mud.send_message(pid, "-+ vous etes mort de la main de {}".format(players[id]["name"]))
+                    if players[pid]["room"] == players[id]["room"]:
+                        mud.send_message(id, "+ attaque sur {}".format(players[pid]["name"]))
+                        mud.send_message(pid, "+ {} vous attaque".format(players[id]["name"]))
+                        seuil = 50 + (players[pid]["CBT"] - players[id]["CBT"])
+                        jet = random.randint(1, 100)
+                        if jet >= seuil:
+                            mud.send_message(id, "-+ vous touchez - {} > {}".format(jet, seuil))
+                            mud.send_message(pid, "-+ {} vous touche".format(players[id]["name"]))
                             if (players[pid]["CBT"] - players[id]["CBT"]) >= 0:
-                                gainhonor = 1 + (players[pid]["CBT"] - players[id]["CBT"])
+                                gainxpcbt = 1 + (players[pid]["CBT"] - players[id]["CBT"])
                             else:
-                                gainhonor = 1
-                            players[id]["honor"] = players[id]["honor"] + gainhonor
-                            mud.send_message(id, "-+ vous gagnez {} d'honneur".format(gainhonor))
-                            players[pid]["room"] = "Hall"
-                            players[pid]["PVa"] = players[pid]["PVm"]
-                            mud.send_message(pid, "[DIEU] : vous ramene a la vie dans le hall")
+                                gainxpcbt = 1
+                            players[id]["xpCBT"] = players[id]["xpCBT"] + gainxpcbt
+                            if players[id]["xpCBT"] > players[id]["CBT"]:
+                                players[id]["xpCBT"] = 0
+                                players[id]["CBT"] = players[id]["CBT"] + 1
+                                mud.send_message(id, "-+ vous passez au niveau {} en combat".format(players[id]["CBT"]))
+                            tmpdegt = random.randint(1, players[id]["equip"]["arme"]["degt"]) + players[id]["FOR"]
+                            tmpprot = players[pid]["equip"]["armure"]["prot"] + players[pid]["END"]
+                            degat = tmpdegt - tmpprot
+                            mud.send_message(id, "-+ vous infligez {} degats [att({}) - def({})]".format(degat, tmpdegt, tmpprot))
+                            mud.send_message(pid, "-+ vous subissez {} degats dut a l'arme : {}".format(degat, players[id]["equip"]["arme"]["name"]))
+                            players[pid]["PVa"] = players[pid]["PVa"] - degat
+                            if players[pid]["PVa"] <= 0:
+                                mud.send_message(id, "-+ vous tuez {}".format(players[pid]["name"]))
+                                mud.send_message(pid, "-+ vous etes mort de la main de {}".format(players[id]["name"]))
+                                if (players[pid]["CBT"] - players[id]["CBT"]) >= 0:
+                                    gainhonor = 1 + (players[pid]["CBT"] - players[id]["CBT"])
+                                else:
+                                    gainhonor = 1
+                                players[id]["honor"] = players[id]["honor"] + gainhonor
+                                mud.send_message(id, "-+ vous gagnez {} d'honneur".format(gainhonor))
+                                players[pid]["room"] = "Hall"
+                                players[pid]["PVa"] = players[pid]["PVm"]
+                                mud.send_message(pid, "[DIEU] : vous ramene a la vie dans le hall")
+                        else:
+                            mud.send_message(id, "-+ vous ratez - {} > {}".format(jet, seuil))
+                            mud.send_message(pid, "-+ {} vous rate".format(players[id]["name"]))
                     else:
-                        mud.send_message(id, "-+ vous ratez - {} > {}".format(jet, seuil))
-                        mud.send_message(pid, "-+ {} vous rate".format(players[id]["name"]))
-
+                        mud.send_message(id, "{} n'est pas dans la piece".format(players[pid]["name"]))
+                        
         # 'dire' command
         elif command == "dire":
             # go through every player in the game
